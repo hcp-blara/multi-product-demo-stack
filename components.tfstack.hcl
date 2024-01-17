@@ -14,6 +14,7 @@ variable "region" {
 
 required_providers {
   tfe = {
+    source  = "hashicorp/tfe"
     version = "~> 0.49.0"
   }
   doormat = {
