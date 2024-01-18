@@ -76,7 +76,7 @@ component "secrets" {
   inputs = {}
 
   providers = {
-    hcp = provider.hcp.this
+    vault = provider.vault.this
   }
 }
 
