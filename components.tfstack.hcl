@@ -37,6 +37,10 @@ required_providers {
     source  = "hashicorp/hcp"
     version = "~> 0.80.0"
   }
+  vault = {
+    source = "hashicorp/vault"
+    version = "~> 3.24.0"
+  }
 }
 
 provider "aws" "this" {
