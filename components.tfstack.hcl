@@ -12,6 +12,14 @@ variable "region" {
   description = "The AWS and HCP region to create resources in"
 }
 
+variable "role_arn" {
+  type = string
+}
+
+variable "identity_token_file" {
+  type = string
+}
+
 required_providers {
   tfe = {
     source  = "hashicorp/tfe"
@@ -32,6 +40,21 @@ required_providers {
 }
 
 provider "doormat" "this" {}
+provider "hcp" "this" {}
+provider "aws" "this" {
+  config {
+    region = var.region
+
+    assume_role_with_web_identity {
+      role_arn                = var.role_arn
+      web_identity_token_file = var.identity_token_file
+    }
+
+    default_tags {
+      tags = var.default_tags
+    }
+  }
+}
 
 component "networking" {
   source = "./networking"
@@ -44,6 +67,8 @@ component "networking" {
 
   providers = {
     doormat = provider.doormat.this
+    aws     = provider.aws.this
+    hcp     = provider.hcp.this
   }
 }
 
