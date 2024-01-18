@@ -35,7 +35,7 @@ required_providers {
   }
   hcp = {
     source  = "hashicorp/hcp"
-    version = "~> 0.66.0"
+    version = "~> 0.80.0"
   }
 }
 
@@ -65,7 +65,7 @@ provider "vault" "this" {
 
 provider "hcp" "this" {
   client_id      = component.secrets.hcp_client_id
-  client_secrets = component.secrets.hcp_client_secret
+  client_secret  = component.secrets.hcp_client_secret
 }
 
 component "secrets" {
