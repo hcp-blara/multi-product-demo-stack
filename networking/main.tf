@@ -1,20 +1,29 @@
 terraform {
   required_providers {
-    doormat = {
-      source  = "doormat.hashicorp.services/hashicorp-security/doormat"
-      version = "~> 0.0.6"
-    }
-
     aws = {
       source  = "hashicorp/aws"
       version = "~> 5.8.0"
     }
-
     hcp = {
       source  = "hashicorp/hcp"
       version = "~> 0.66.0"
     }
+    vault = {
+      source = "hashicorp/vault"
+      version = "~> 3.24.0"
+    }
   }
+}
+
+data "vault_kv_secret_v2" "hcp_creds" {
+  name  = "hcp"
+  mount = "kv"
+}
+
+provider "hcp" {
+  client_id = data.vault_kv_secret_v2.hcp_creds.data["client_id"]
+  client_secret = data.vault_kv_secret_v2.hcp_creds.data["client_secret"]
+  project_id = var.project_id
 }
 
 data "aws_availability_zones" "available" {

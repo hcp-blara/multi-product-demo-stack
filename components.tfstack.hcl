@@ -16,7 +16,11 @@ variable "role_arn" {
   type = string
 }
 
-variable "identity_token_file" {
+variable "aws_identity_token_file" {
+  type = string
+}
+
+variable "hcp_project_id" {
   type = string
 }
 
@@ -39,15 +43,26 @@ required_providers {
   }
 }
 
-provider "doormat" "this" {}
-provider "hcp" "this" {}
 provider "aws" "this" {
   config {
     region = var.region
 
     assume_role_with_web_identity {
       role_arn                = var.role_arn
-      web_identity_token_file = var.identity_token_file
+      web_identity_token_file = var.aws_identity_token_file
+    }
+  }
+}
+
+provider "vault" "this" {
+  config {
+    skip_child_token = true
+    address          = var.vault_address
+    namespace        = var.vault_namespace
+
+    auth_login_jwt {
+      jwt  = file(var.identity_token_file)
+      role = var.vault_role
     }
   }
 }
@@ -59,12 +74,12 @@ component "networking" {
     aws_account_id = var.aws_account_id
     region         = var.region
     stack_id       = var.stack_id
+    project_id     = var.hcp_project_id
   }
 
   providers = {
-    doormat = provider.doormat.this
+    vault   = provider.vault.this
     aws     = provider.aws.this
-    hcp     = provider.hcp.this
   }
 }
 
