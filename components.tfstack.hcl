@@ -64,8 +64,10 @@ provider "vault" "this" {
 }
 
 provider "hcp" "this" {
-  client_id      = component.secrets.hcp_client_id
-  client_secret  = component.secrets.hcp_client_secret
+  config {
+    client_id      = component.secrets.hcp_client_id
+    client_secret  = component.secrets.hcp_client_secret
+  }
 }
 
 component "secrets" {
