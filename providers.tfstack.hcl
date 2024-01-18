@@ -35,7 +35,7 @@ provider "vault" "this" {
     namespace        = var.vault_namespace
 
     auth_login_jwt {
-      jwt  = file(var.identity_token_file)
+      jwt  = file(var.vault_identity_token_file)
       role = var.vault_role
     }
   }

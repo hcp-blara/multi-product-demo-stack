@@ -24,3 +24,18 @@ variable "hcp_project_id" {
   type = string
 }
 
+variable "vault_namespace" {
+  type = string
+}
+
+variable "vault_identity_token_file" {
+  type = string
+}
+
+variable "vault_role" {
+  type = string
+}
+
+variable "vault_address" {
+  type = string
+}
