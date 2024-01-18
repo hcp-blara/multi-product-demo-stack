@@ -29,10 +29,6 @@ required_providers {
     source  = "hashicorp/tfe"
     version = "~> 0.49.0"
   }
-  doormat = {
-    source  = "doormat.hashicorp.services/hashicorp-security/doormat"
-    version = "~> 0.0.6"
-  }
   aws = {
     source  = "hashicorp/aws"
     version = "~> 5.8.0"
@@ -64,6 +60,21 @@ provider "vault" "this" {
       jwt  = file(var.identity_token_file)
       role = var.vault_role
     }
+  }
+}
+
+provider "hcp" "this" {
+  client_id      = component.secrets.hcp_client_id
+  client_secrets = component.secrets.hcp_client_secret
+}
+
+component "secrets" {
+  source = "./secrets"
+
+  inputs = {}
+
+  providers = {
+    hcp = provider.hcp.this
   }
 }
 
