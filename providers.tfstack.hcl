@@ -9,7 +9,7 @@ required_providers {
   }
   hcp = {
     source  = "hashicorp/hcp"
-    version = "~> 0.80.0"
+    version = "~> 0.66.0"
   }
   vault = {
     source = "hashicorp/vault"
