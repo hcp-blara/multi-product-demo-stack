@@ -18,5 +18,6 @@ deployment "example" {
     vault_role                = "tfc-role"
     vault_address             = "https://vault-dev-public-vault-557bd10a.9a7a158f.z1.hashicorp.cloud:8200"
     hcp_project_id            = "f26505f0-343d-48be-8503-89d7addf2310"
+    tfc_organization          = "ben-lara-org"
   }
 }

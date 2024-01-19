@@ -39,3 +39,7 @@ variable "vault_role" {
 variable "vault_address" {
   type = string
 }
+
+variable "tfc_organization" {
+  type = string
+}

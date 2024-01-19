@@ -32,6 +32,7 @@ component "hcp_clusters" {
     boundary_admin_password = component.secrets.boundary_admin_password
     stack_id                = var.stack_id
     hvn_id                  = component.networking.hvn_id
+    tfc_organization        = var.tfc_organization
   }
 
   providers = {
