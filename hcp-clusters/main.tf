@@ -25,7 +25,3 @@ resource "hcp_boundary_cluster" "hashistack" {
 resource "hcp_consul_cluster_root_token" "provider" {
   cluster_id = hcp_consul_cluster.hashistack.cluster_id
 }
-
-resource "hcp_vault_cluster_admin_token" "provider" {
-  cluster_id = hcp_vault_cluster.hashistack.cluster_id
-}
