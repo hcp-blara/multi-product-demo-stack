@@ -49,4 +49,8 @@ provider "hcp" "this" {
   }
 }
 
-provider "tfe" "this" {}
+provider "tfe" "this" {
+  config {
+    token = component.secrets.tfe_token
+  }
+}
