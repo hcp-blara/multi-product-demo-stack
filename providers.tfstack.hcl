@@ -45,6 +45,7 @@ provider "hcp" "this" {
   config {
     client_id      = component.secrets.hcp_client_id
     client_secret  = component.secrets.hcp_client_secret
+    project_id     = var.hcp_project_id
   }
 }
 
