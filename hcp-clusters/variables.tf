@@ -1,7 +1,3 @@
-# variable "tfc_organization" {
-#   type = string
-# }
-
 variable "stack_id" {
   type        = string
   description = "The name of your stack"
@@ -39,4 +35,9 @@ variable "consul_cluster_tier" {
   type        = string
   description = "The tier used when creating the Consul cluster"
   default     = "development"
+}
+
+variable "hvn_id" {
+  type = string
+  description = "ID of the HVN to deploy clusters to"
 }
