@@ -6,6 +6,7 @@ identity_token "vault" {
   audience = ["vault.workload.identity"]
 }
 
+/*
 deployment "example" {
   variables = {
     aws_account_id            = "567875439609"
@@ -21,3 +22,4 @@ deployment "example" {
     tfc_organization          = "ben-lara-org"
   }
 }
+*/
