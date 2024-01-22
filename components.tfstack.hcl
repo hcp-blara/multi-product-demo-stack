@@ -16,6 +16,12 @@ component "networking" {
     region         = var.region
     stack_id       = var.stack_id
     project_id     = var.hcp_project_id
+    vpc_cidr_block = "10.1.0.0/16"
+    vpc_public_subnets = [
+      "10.1.1.0/24",
+      "10.1.2.0/24",
+      "10.1.3.0/24"
+    ]
   }
 
   providers = {
@@ -39,4 +45,3 @@ component "hcp_clusters" {
     hcp     = provider.hcp.this
   }
 }
-
