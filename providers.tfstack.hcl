@@ -19,6 +19,10 @@ required_providers {
     source = "hashicorp/boundary"
     version = "~> 1.1.9"
   }
+  time = {
+    source = "hashicorp/time"
+    version = "~> 0.10.0"
+  }
 }
 
 provider "aws" "this" {

@@ -58,5 +58,7 @@ component "boundary-config" {
   providers = {
     boundary = provider.boundary.this
     aws = provider.aws.this
+    time = provider.time.this
+    vault = provider.vault.this
   }
 }

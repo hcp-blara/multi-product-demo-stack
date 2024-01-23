@@ -44,7 +44,7 @@ variable "tfc_organization" {
   type = string
 }
 
-variable "boundary_admin_user" {
+variable "boundary_admin_username" {
   type = string
   default = "admin"
 }
