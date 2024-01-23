@@ -71,3 +71,4 @@ provider "boundary" "this" {
   }
 }
 
+provider "time" "this" {}
