@@ -20,5 +20,6 @@ deployment "example" {
     hcp_project_id            = "f26505f0-343d-48be-8503-89d7addf2310"
     tfc_organization          = "ben-lara-org"
     my_email = "ben.lara@hashicorp.com"
+    boundary_admin_username = "admin"
   }
 }
