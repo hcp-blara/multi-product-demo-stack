@@ -52,7 +52,7 @@ data "aws_iam_policy" "demo_user_permissions_boundary" {
 
 # Create the user to be used in Boundary for dynamic host discovery. Then attach the policy to the user.
 resource "aws_iam_user" "boundary_dynamic_host_catalog" {
-  name                 = "demo-${var.my_email}-bdhc"
+  name                 = "demo-${var.my_email}-${var.stack_id}-bdhc"
   permissions_boundary = data.aws_iam_policy.demo_user_permissions_boundary.arn
   force_destroy        = true
 }

@@ -53,6 +53,7 @@ component "boundary-config" {
     region = var.region
     my_email = var.my_email
     vault_public_endpoint = var.vault_address
+    stack_id = var.stack_id
   }
 
   providers = {

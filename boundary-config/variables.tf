@@ -11,3 +11,7 @@ variable "my_email" {
 variable "vault_public_endpoint" {
   type = string
 }
+
+variable "stack_id" {
+  type = string
+}
