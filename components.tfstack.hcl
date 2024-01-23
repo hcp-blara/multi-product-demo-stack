@@ -45,3 +45,18 @@ component "hcp_clusters" {
     hcp     = provider.hcp.this
   }
 }
+
+component "boundary-config" {
+  source = "./boundary-config"
+
+  inputs = {
+    region = var.region
+    my_email = var.my_email
+    vault_public_endpoint = var.vault_address
+  }
+
+  providers = {
+    boundary = provider.boundary.this
+    aws = provider.aws.this
+  }
+}

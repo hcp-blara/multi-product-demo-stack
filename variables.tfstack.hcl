@@ -43,3 +43,12 @@ variable "vault_address" {
 variable "tfc_organization" {
   type = string
 }
+
+variable "boundary_admin_user" {
+  type = string
+  default = "admin"
+}
+
+variable "my_email" {
+  type = string
+}

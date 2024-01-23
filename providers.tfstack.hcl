@@ -15,6 +15,10 @@ required_providers {
     source = "hashicorp/vault"
     version = "~> 3.24.0"
   }
+  boundary = {
+    source = "hashicorp/boundary"
+    version = "~> 1.1.9"
+  }
 }
 
 provider "aws" "this" {
@@ -54,3 +58,12 @@ provider "tfe" "this" {
     token = component.secrets.tfe_token
   }
 }
+
+provider "boundary" "this" {
+  config {
+    addr  = component.hcp_clusters.boundary_public_endpoint
+    auth_method_login_name = var.boundary_admin_username
+    auth_method_password   = component.secrets.boundary_admin_password
+  }
+}
+
