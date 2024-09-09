@@ -1,10 +1,5 @@
 terraform {
   required_providers {
-    doormat = {
-      source  = "doormat.hashicorp.services/hashicorp-security/doormat"
-      version = "~> 0.0.6"
-    }
-
     aws = {
       source  = "hashicorp/aws"
       version = "~> 5.8.0"
@@ -16,44 +11,6 @@ terraform {
     }
   }
 }
-
-provider "doormat" {}
-
-data "doormat_aws_credentials" "creds" {
-  provider = doormat
-  role_arn = "arn:aws:iam::${var.aws_account_id}:role/tfc-doormat-role_5_nomad-cluster"
-}
-
-provider "aws" {
-  region     = var.region
-  access_key = data.doormat_aws_credentials.creds.access_key
-  secret_key = data.doormat_aws_credentials.creds.secret_key
-  token      = data.doormat_aws_credentials.creds.token
-}
-
-data "terraform_remote_state" "networking" {
-  backend = "remote"
-
-  config = {
-    organization = var.tfc_organization
-    workspaces = {
-      name = "1_networking"
-    }
-  }
-}
-
-data "terraform_remote_state" "hcp_clusters" {
-  backend = "remote"
-
-  config = {
-    organization = var.tfc_organization
-    workspaces = {
-      name = "2_hcp-clusters"
-    }
-  }
-}
-
-provider "vault" {}
 
 resource "vault_policy" "nomad_policy" {
   name   = "nomad"
@@ -101,7 +58,7 @@ resource "vault_ssh_secret_backend_role" "ssh_role" {
 
 resource "aws_security_group" "nomad_server" {
   name   = "nomad-server"
-  vpc_id = data.terraform_remote_state.networking.outputs.vpc_id
+  vpc_id = var.vpc_id
 
   ingress {
     from_port   = 4646
@@ -117,7 +74,7 @@ resource "aws_security_group" "nomad_server" {
 
 resource "aws_security_group" "nomad" {
   name   = "nomad"
-  vpc_id = data.terraform_remote_state.networking.outputs.vpc_id
+  vpc_id = var.vpc_id
 
   ingress {
     from_port   = 0
@@ -148,7 +105,7 @@ resource "aws_security_group" "nomad" {
 resource "aws_security_group" "nomad_lb" {
   name        = "nomad_lb_sg"
   description = "Allow inbound traffic"
-  vpc_id = data.terraform_remote_state.networking.outputs.vpc_id
+  vpc_id = var.vpc_id
 
   ingress {
     from_port   = 80
@@ -161,21 +118,21 @@ resource "aws_security_group" "nomad_lb" {
     from_port   = 4646
     to_port     = 4646
     protocol    = "tcp"
-    cidr_blocks = data.terraform_remote_state.networking.outputs.subnet_cidrs
+    cidr_blocks = var.subnet_cidrs
   }
 }
 
 resource "aws_alb" "nomad" {
   name               = "nomad-alb"
   security_groups    = [ aws_security_group.nomad_lb.id ]
-  subnets            = data.terraform_remote_state.networking.outputs.subnet_ids
+  subnets            = var.subnet_cidrs
 }
 
 resource "aws_alb_target_group" "nomad" {
   name     = "nomad"
   port     = 4646
   protocol = "HTTP"
-  vpc_id   = data.terraform_remote_state.networking.outputs.vpc_id
+  vpc_id   = var.vpc_id
 
   health_check {
     path = "/v1/agent/health?type=server"
@@ -220,7 +177,7 @@ resource "aws_launch_template" "nomad_server_launch_template" {
     security_groups = [ 
       aws_security_group.nomad_server.id,
       aws_security_group.nomad.id,
-      data.terraform_remote_state.networking.outputs.hvn_sg_id
+      var.hvn_sg_id
     ]
   }
 
@@ -233,11 +190,11 @@ resource "aws_launch_template" "nomad_server_launch_template" {
       {
         nomad_license      = var.nomad_license,
         nomad_token        = vault_token.nomad_token.client_token
-        consul_ca_file     = data.terraform_remote_state.hcp_clusters.outputs.consul_ca_file,
-        consul_config_file = data.terraform_remote_state.hcp_clusters.outputs.consul_config_file,
-        consul_acl_token   = data.terraform_remote_state.hcp_clusters.outputs.consul_root_token,
+        consul_ca_file     = var.consul_ca_file,
+        consul_config_file = var.consul_config_file,
+        consul_acl_token   = var.consul_root_token,
         vault_ssh_pub_key  = vault_ssh_secret_backend_ca.ssh_ca.public_key,
-        vault_public_endpoint = data.terraform_remote_state.hcp_clusters.outputs.vault_public_endpoint
+        vault_public_endpoint = var.vault_address
       }
     )
   )
@@ -261,7 +218,7 @@ resource "aws_autoscaling_group" "nomad_server_asg" {
     version = aws_launch_template.nomad_server_launch_template.latest_version
   }
   
-  vpc_zone_identifier = data.terraform_remote_state.networking.outputs.subnet_ids
+  vpc_zone_identifier = var.subnet_ids
 
   instance_refresh {
     strategy = "Rolling"
@@ -307,7 +264,7 @@ resource "null_resource" "bootstrap_acl" {
                 --header "X-Vault-Namespace: admin" \
                 --request PUT \
                 --data "{ \"data\": { \"$key\": \"$value\" }}" \
-                ${data.terraform_remote_state.hcp_clusters.outputs.vault_public_endpoint}/v1/hashistack-admin/data/nomad_bootstrap/$key
+                ${var.vault_address}/v1/hashistack-admin/data/nomad_bootstrap/$key
         done
         break
       fi

@@ -63,3 +63,26 @@ component "boundary-config" {
     vault = provider.vault.this
   }
 }
+
+component "nomad-cluster" {
+  source = "./nomad-cluster"
+
+  inputs = {
+    region = var.region
+    vault_address = var.vault_address
+    stack_id = var.stack_id
+    vpc_id = component.networking.vpc_id
+    subnet_cidrs = components.networking.subnet_cidrs
+    hvn_sg_id = components.networking.hvn_sg_id
+    consul_ca_file = components.hcp_clusters.consul_ca_file
+    consul_config_file = components.hcp_clusters.consul_config_file
+    consul_root_token = components.hcp_clusters.consul_root_token
+    subnet_ids = components.networking.subnet_ids
+  }
+
+  providers = {
+    boundary = provider.boundary.this
+    aws = provider.aws.this
+    vault = provider.vault.this
+  }
+}
